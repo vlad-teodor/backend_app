@@ -1,14 +1,19 @@
 import java.util.*;
 
+/**
+ * Container for the places
+ */
 public class PlaceContainer {
-    private HashMap<String, Place> placesByName = new HashMap<>();
-    private HashMap<String, CountryContainer> placesByCountry = new HashMap<>();
+    private HashMap<String, Place> placesByName = new HashMap<>(); // name -> place
+    private HashMap<String, CountryContainer> placesByCountry = new HashMap<>(); // country -> counties in the country
+    ArrayList<Place> places = new ArrayList<>(); // list sorted ascending by price
 
     /**
      * Inserts the place into the placesByName map
      * @return true if it was inserted, false it already existed
      */
     boolean insert(Place place) {
+        // place with the name already exists
         if (placesByName.containsKey(place.name)) return false;
 
         placesByName.put(place.name, place);
@@ -16,7 +21,7 @@ public class PlaceContainer {
     }
 
     /**
-     * Inserts the place into its specific country container
+     * Inserts the place into its specific country container and the array that is sorted by price
      */
     void insert2(Place place) {
         CountryContainer countryContainer = placesByCountry.get(place.location.country);
@@ -26,21 +31,41 @@ public class PlaceContainer {
             placesByCountry.put(place.location.country, countryContainer);
         }
         countryContainer.insert(place);
+
+        Main.insertOrdered(places, place);
     }
 
+    /**
+     * @param name Name of the place requested
+     * @return The requested place
+     */
     Place getByName(String name) {
         return placesByName.get(name);
     }
 
+    /**
+     * @return a list of at most 5 places fullfilling the conditions
+     */
     Place[] getByCost(String country, String county, String city, Date startDate, Date endDate) {
+        if (placesByCountry.get(country) == null) {
+            System.out.println("Country does not exist");
+            return null;
+        }
         return placesByCountry.get(country).getByCost(county, city, startDate, endDate);
     }
 }
 
+/**
+ * Container for a country
+ */
 class CountryContainer {
-    private HashMap<String, CountyContainer> counties = new HashMap<>();
+    private HashMap<String, CountyContainer> counties = new HashMap<>(); // county name -> cities in the counties
 
     Place[] getByCost(String county, String city, Date startDate, Date endDate) {
+        if (counties.get(county) == null) {
+            System.out.println("County does not exist");
+            return null;
+        }
         return counties.get(county).getByCost(city, startDate, endDate);
     }
 
@@ -57,10 +82,17 @@ class CountryContainer {
     }
 }
 
+/**
+ * Container for a County
+ */
 class CountyContainer {
-    private HashMap<String, CityContainer> cities = new HashMap<>();
+    private HashMap<String, CityContainer> cities = new HashMap<>(); // City name -> places in the city
 
     Place[] getByCost(String city, Date startDate, Date endDate) {
+        if (cities.get(city) == null) {
+            System.out.println("City does not exist");
+            return null;
+        }
         return cities.get(city).getByCost(startDate, endDate);
     }
 
@@ -77,21 +109,17 @@ class CountyContainer {
     }
 }
 
+/**
+ * Container for a city, containing an array of the places it has
+ */
 class CityContainer {
     private ArrayList<Place> places = new ArrayList<>();
 
     /**
      * Insert the city into the list of places in the city, ordered by price, ascending
-     * Does this by inserting before the lowest priced place with a price higher than the place's price
      */
     void insert(Place place) {
-        for (int i = 0; i < places.size(); i++) {
-            if (places.get(i).dailyPrice > place.dailyPrice) {
-                places.add(i, place);
-                return;
-            }
-        }
-        places.add(place);
+        Main.insertOrdered(places, place);
     }
 
     /**
@@ -101,11 +129,12 @@ class CityContainer {
         Place[] goodPlaces = new Place[5];
         int i = 0;
         for (Place place : places) {
-            if (place.period.start.before(startDate) && place.period.end.after(endDate)) {
+            if (place.period.start.after(startDate) && place.period.end.before(endDate)) {
                 goodPlaces[i++] = place;
             }
-            if (i == 5) break;
+            if (i == 5) break; // at most 5 places
         }
+        if (i == 0) return null;
         return goodPlaces;
     }
 }
