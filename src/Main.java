@@ -118,15 +118,15 @@ public class Main {
                     System.out.flush();
                     String activity = s.nextLine();
 
-                    int i = 0;
+                    boolean found = false;
                     for (Place place : places.places) {
                         if (place.activities.contains(activity)) {
                             System.out.println(place);
-                            i++;
-                            if (i >= 10) break;
+                            found = true; // a place was found
+                            break;
                         }
                     }
-                    if (i == 0) System.out.println("No results found");
+                    if (!found) System.out.println("No results found");
                     break;
                 default:
                     System.out.println("Invalid command");
