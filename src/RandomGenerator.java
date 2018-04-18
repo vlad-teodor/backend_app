@@ -2,6 +2,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Random;
 
+import static java.lang.Math.abs;
+
 public class RandomGenerator {
     static Random r = new Random();
     static String[] cities = {"Bucharest", "Constanta", "Timisoara", "San Francisco", "Helsinki", "London", "Dublin",
@@ -38,8 +40,8 @@ public class RandomGenerator {
     }
 
     static Range getRange() {
-        Date startDate = new Date(new Date().getTime() + r.nextLong() % (5000000000L));
-        Date endDate = new Date(startDate.getTime() + r.nextLong() % (5000000000L));
+        Date startDate = new Date(new Date().getTime() + abs(r.nextLong() % (5000000000L)));
+        Date endDate = new Date(startDate.getTime() + abs(r.nextLong() % (5000000000L)));
         return new Range(startDate, endDate);
     }
 

@@ -1,5 +1,8 @@
 import java.util.Date;
 
+/**
+ * A date range from start to end
+ */
 public class Range {
     Date start, end;
 

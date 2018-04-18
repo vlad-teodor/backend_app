@@ -1,38 +1,41 @@
-import java.util.Date;
-import java.util.Random;
-
+/**
+ * A place containing name, location, price per day, period in which it can be visited and the activities possible
+ */
 public class Place {
     String name;
-    Loc location;
+    City location;
     double dailyPrice;
     Range period;
-    String[] activities;
+    private String[] activities;
 
-    public Place(String name) {
+    Place(String name) {
         this.name = name;
     }
 
-    public Place addPrice(double price) {
+    Place addPrice(double price) {
         this.dailyPrice = price;
         return this;
     }
 
-    public Place addLocation(Loc location) {
+    Place addLocation(City location) {
         this.location = location;
         return this;
     }
 
-    public Place addPeriod(Range period) {
+    Place addPeriod(Range period) {
         this.period = period;
         return this;
     }
 
-    public Place addActivities(String[] activities) {
+    Place addActivities(String[] activities) {
         this.activities = activities;
         return this;
     }
 
-    String getActivities() {
+    /**
+     * @return a formatted string with the activities possible in this place
+     */
+    private String getActivities() {
         StringBuilder sb = new StringBuilder();
         for (String activity : this.activities) {
             sb.append(activity);
