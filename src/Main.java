@@ -56,6 +56,10 @@ public class Main {
                     .addPeriod(RandomGenerator.getRange())
                     .addActivities(RandomGenerator.getActivities());
             places.insert2(newPlace);
+
+            // There are saunas everywhere in Finland
+            if ((newPlace.location.city.equals("Helsinki") || newPlace.location.country.equals("Finland")) &&
+                    !newPlace.activities.contains("Sauna")) newPlace.activities.add("Sauna");
         }
         for (Place p : places.places) {
             System.out.println(p);

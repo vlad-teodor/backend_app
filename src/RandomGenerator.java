@@ -70,8 +70,8 @@ class RandomGenerator {
 
         while (currentIndex < activities.length) {
             // move in the activities list
-            currentIndex += r.nextInt(activities.length - currentIndex);
-            if (currentIndex == lastIndex) {
+            currentIndex += r.nextInt(activities.length - currentIndex + 1);
+            if (currentIndex == lastIndex || currentIndex >= activities.length) {
                 // don't allow duplicates or random endless loops
                 currentIndex++;
                 if (currentIndex >= activities.length) break;
